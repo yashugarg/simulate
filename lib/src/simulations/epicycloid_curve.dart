@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:simulate/src/custom_items/simulation_slider.dart';
 
 GlobalKey<_EpicycloidState> globalKey = GlobalKey<_EpicycloidState>();
 
@@ -122,20 +123,16 @@ class _EpicycloidCurveState extends State<EpicycloidCurve> {
               SizedBox(
                 height: 30,
               ),
-              Slider(
-                min: 0,
-                max: 500,
-                divisions: 500,
-                activeColor: Theme.of(context).accentColor,
-                inactiveColor: Colors.grey,
-                onChanged: (animating)
-                    ? null
-                    : (value) {
-                        setState(() {
-                          total = double.parse(value.toStringAsFixed(1));
-                        });
-                      },
-                value: total,
+              AnimationSlider(
+                maxValue: 500,
+                minValue: 0,
+                divs: 500,
+                callback: (double val, bool animating) {
+                  setState(() {
+                    total = val;
+                    animatepoints = animating;
+                  });
+                },
               ),
               Center(
                 child: Text(
@@ -145,20 +142,16 @@ class _EpicycloidCurveState extends State<EpicycloidCurve> {
                   style: Theme.of(context).textTheme.subtitle,
                 ),
               ),
-              Slider(
-                min: 0,
-                max: 51,
-                divisions: 510,
-                activeColor: Theme.of(context).accentColor,
-                inactiveColor: Colors.grey,
-                onChanged: (animating)
-                    ? null
-                    : (value) {
-                        setState(() {
-                          factor = double.parse(value.toStringAsFixed(1));
-                        });
-                      },
-                value: factor,
+              AnimationSlider(
+                maxValue: 51,
+                minValue: 0,
+                divs: 510,
+                callback: (double val, bool animating) {
+                  setState(() {
+                    factor = val;
+                    animatefactor = animating;
+                  });
+                },
               ),
               Center(
                 child: Text(
@@ -184,49 +177,6 @@ class _EpicycloidCurveState extends State<EpicycloidCurve> {
               animating: animating,
               key: globalKey,
             ),
-            Positioned(
-              left: 12,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text(
-                    'Animate with Factor:',
-                  ),
-                  Checkbox(
-                    onChanged: (animating)
-                        ? null
-                        : (_) {
-                            setState(() {
-                              animatefactor = !animatefactor;
-                            });
-                          },
-                    activeColor: Colors.red,
-                    value: animatefactor,
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text(
-                    'Animate with Points:',
-                  ),
-                  Checkbox(
-                    onChanged: (animating)
-                        ? null
-                        : (_) {
-                            setState(() {
-                              animatepoints = !animatepoints;
-                            });
-                          },
-                    activeColor: Colors.red,
-                    value: animatepoints,
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       ),
