@@ -4,13 +4,17 @@ import 'package:flutter/cupertino.dart';
 class AnimationSlider extends StatefulWidget {
   final double minValue;
   final double maxValue;
-  final int divs;
-  final void Function(double, bool) callback;
+  final int divisions;
+  var value;
+  bool animateVariable;
+  Function(double, bool) callback;
   AnimationSlider({
     Key key,
     @required this.minValue,
     @required this.maxValue,
-    this.divs,
+    @required this.value,
+    @required this.animateVariable,
+    this.divisions,
     this.callback,
   }) : super(key: key);
 
@@ -18,13 +22,6 @@ class AnimationSlider extends StatefulWidget {
 }
 
 class _AnimationSliderState extends State<AnimationSlider> {
-  double val = 0.0;
-  bool animating = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,27 +31,29 @@ class _AnimationSliderState extends State<AnimationSlider> {
           child: Slider(
             min: widget.minValue,
             max: widget.maxValue,
-            divisions: widget.divs,
+            divisions: widget.divisions,
             activeColor: Theme.of(context).accentColor,
             inactiveColor: Colors.grey,
-            onChanged: (animating)
+            onChanged: (widget.animateVariable)
                 ? null
                 : (value) {
                     setState(() {
-                      val = double.parse(value.toStringAsFixed(1));
-                      widget.callback(val, animating);
+                      widget.value = double.parse(value.toStringAsFixed(1));
+                      widget.callback(widget.value, widget.animateVariable);
                     });
                   },
-            value: val,
+            value: widget.value,
           ),
         ),
         IconButton(
-            icon: (!animating) ? Icon(Icons.play_arrow) : Icon(Icons.pause),
+            icon: (!widget.animateVariable)
+                ? Icon(Icons.play_arrow)
+                : Icon(Icons.pause),
             color: Theme.of(context).accentColor,
             onPressed: () {
               setState(() {
-                animating = !animating;
-                widget.callback(val, animating);
+                widget.animateVariable = !widget.animateVariable;
+                widget.callback(widget.value, widget.animateVariable);
               });
             }),
       ],
